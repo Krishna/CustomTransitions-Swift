@@ -25,7 +25,7 @@ class AAPLSwipeSecondViewController: UIViewController {
         
         // This gesture recognizer could be defined in the storyboard but is
         // instead created in code for clarity.
-        let interactiveTransitionRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: "interactiveTransitionRecognizerAction:")
+        let interactiveTransitionRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(AAPLSwipeSecondViewController.interactiveTransitionRecognizerAction(_:)))
         interactiveTransitionRecognizer.edges = .Left
         self.view.addGestureRecognizer(interactiveTransitionRecognizer)
     }

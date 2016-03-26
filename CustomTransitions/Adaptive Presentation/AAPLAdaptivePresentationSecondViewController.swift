@@ -29,7 +29,7 @@ class AAPLAdaptivePresentationSecondViewController: UIViewController, UIAdaptive
     // navigationItem.  This button will be picked up and displayed in the
     // navigation bar of the navigation controller returned by
     // -presentationController:viewControllerForAdaptivePresentationStyle:
-        let dismissButton = UIBarButtonItem(title: "Dismiss", style: .Plain, target: self, action: "dismissButtonAction:")
+        let dismissButton = UIBarButtonItem(title: "Dismiss", style: .Plain, target: self, action: #selector(AAPLAdaptivePresentationSecondViewController.dismissButtonAction(_:)))
         self.navigationItem.leftBarButtonItem = dismissButton
     }
 

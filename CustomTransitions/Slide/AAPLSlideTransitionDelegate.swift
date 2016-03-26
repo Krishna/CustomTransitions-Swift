@@ -74,7 +74,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     var panGestureRecognizer: UIPanGestureRecognizer {
         get {
             if _panGestureRecognizer == nil {
-                _panGestureRecognizer = UIPanGestureRecognizer(target: self, action: "panGestureRecognizerDidPan:")
+                _panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(AAPLSlideTransitionDelegate.panGestureRecognizerDidPan(_:)))
             }
             
             return _panGestureRecognizer!
@@ -111,10 +111,10 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
         
         if translation.x > 0.0 && self.tabBarController.selectedIndex > 0 {
             //        // Panning right, transition to the left view controller.
-            self.tabBarController.selectedIndex--
+            self.tabBarController.selectedIndex -= 1
         } else if translation.x < 0.0 && self.tabBarController.selectedIndex + 1 < self.tabBarController.viewControllers?.count ?? 0 {
             // Panning left, transition to the right view controller.
-            self.tabBarController.selectedIndex++
+            self.tabBarController.selectedIndex += 1
         } else {
             // Don't reset the gesture recognizer if we skipped starting the
             // transition because we don't have a translation yet (and thus, could

@@ -203,14 +203,15 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
                 let startTime = NSTimeInterval(projectionLength/(transitionVectorLength + transitionSpacing)) * transitionDuration
                 let duration = NSTimeInterval((projectionLength + transitionSpacing)/(transitionVectorLength + transitionSpacing)) * transitionDuration - startTime
                 
-                sliceAnimationsPending++
+                sliceAnimationsPending += 1
                 
                 UIView.animateWithDuration(duration, delay: startTime, options: [], animations: {
                     toCheckboardSquareView.layer.transform = CATransform3DIdentity
                     fromCheckboardSquareView.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
                     }, completion: {finished in
                         // Finish the transition once the final animation completes.
-                        if --sliceAnimationsPending == 0 {
+                        sliceAnimationsPending -= 1
+                        if sliceAnimationsPending == 0 {
                             let wasCancelled = transitionContext.transitionWasCancelled()
                             
                             transitionContainer.removeFromSuperview()

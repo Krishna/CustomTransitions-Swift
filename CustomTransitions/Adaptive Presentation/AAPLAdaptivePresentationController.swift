@@ -73,7 +73,7 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
             let dismissButton = UIButton(type: .Custom)
             dismissButton.frame = CGRectMake(0, 0, 26.0, 26.0)
             dismissButton.setImage(UIImage(named: "CloseButton"), forState: .Normal)
-            dismissButton.addTarget(self, action: "dismissButtonTapped:", forControlEvents: .TouchUpInside)
+            dismissButton.addTarget(self, action: #selector(AAPLAdaptivePresentationController.dismissButtonTapped(_:)), forControlEvents: .TouchUpInside)
             self.dismissButton = dismissButton
             
             // Add dismissButton -> presentationWrapperView.
