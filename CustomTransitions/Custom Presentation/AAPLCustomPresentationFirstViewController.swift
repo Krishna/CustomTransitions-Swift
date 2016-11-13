@@ -23,8 +23,8 @@ class AAPLCustomPresentationFirstViewController: UIViewController {
     //MARK: Presentation
     
     //| ----------------------------------------------------------------------------
-    @IBAction func buttonAction(sender: UIButton) {
-        let secondViewController = self.storyboard?.instantiateViewControllerWithIdentifier("SecondViewController")
+    @IBAction func buttonAction(_ sender: UIButton) {
+        let secondViewController = self.storyboard?.instantiateViewController(withIdentifier: "SecondViewController")
         
         // For presentations which will use a custom presentation controller,
         // it is possible for that presentation controller to also be the
@@ -37,11 +37,11 @@ class AAPLCustomPresentationFirstViewController: UIViewController {
         // released prior to calling -presentViewController:animated:completion:
         // the NS_VALID_UNTIL_END_OF_SCOPE attribute is appended to the declaration.
         
-        let presentationController = AAPLCustomPresentationController(presentedViewController: secondViewController!, presentingViewController: self)
+        let presentationController = AAPLCustomPresentationController(presentedViewController: secondViewController!, presenting: self)
         
         secondViewController!.transitioningDelegate = presentationController
         
-        self.presentViewController(secondViewController!, animated: true, completion: {
+        self.present(secondViewController!, animated: true, completion: {
             let _ = presentationController
         })
     }

@@ -18,7 +18,7 @@ import UIKit
 @objc(AAPLSwipeFirstViewController)
 class AAPLSwipeFirstViewController: UIViewController {
     
-    private var _customTransitionDelegate: AAPLSwipeTransitionDelegate?
+    fileprivate var _customTransitionDelegate: AAPLSwipeTransitionDelegate?
     
     
     //| ----------------------------------------------------------------------------
@@ -28,7 +28,7 @@ class AAPLSwipeFirstViewController: UIViewController {
         // This gesture recognizer could be defined in the storyboard but is
         // instead created in code for clarity.
         let interactiveTransitionRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(AAPLSwipeFirstViewController.interactiveTransitionRecognizerAction(_:)))
-        interactiveTransitionRecognizer.edges = .Right
+        interactiveTransitionRecognizer.edges = .right
         self.view.addGestureRecognizer(interactiveTransitionRecognizer)
     }
     
@@ -36,9 +36,9 @@ class AAPLSwipeFirstViewController: UIViewController {
     //| ----------------------------------------------------------------------------
     //! Action method for the interactiveTransitionRecognizer.
     //
-    @IBAction func interactiveTransitionRecognizerAction(sender: UIScreenEdgePanGestureRecognizer) {
-        if sender.state == .Began {
-            self.performSegueWithIdentifier("CustomTransition", sender: sender)
+    @IBAction func interactiveTransitionRecognizerAction(_ sender: UIScreenEdgePanGestureRecognizer) {
+        if sender.state == .began {
+            self.performSegue(withIdentifier: "CustomTransition", sender: sender)
         }
         
         // Remaining cases are handled by the
@@ -47,9 +47,9 @@ class AAPLSwipeFirstViewController: UIViewController {
     
     
     //| ----------------------------------------------------------------------------
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "CustomTransition" {
-            let destinationViewController = segue.destinationViewController
+            let destinationViewController = segue.destination
             
             // Unlike in the Cross Dissolve demo, we use a separate object as the
             // transition delegate rather then (our)self.  This promotes
@@ -76,7 +76,7 @@ class AAPLSwipeFirstViewController: UIViewController {
             //       configured edges because prior to iOS 8.3
             //       UIScreenEdgePanGestureRecognizer would always return
             //       UIRectEdgeNone when querying its edges property.
-            transitionDelegate.targetEdge = .Right
+            transitionDelegate.targetEdge = .right
             
             // Note that the view controller does not hold a strong reference to
             // its transitioningDelegate.  If you instantiate a separate object
@@ -87,7 +87,7 @@ class AAPLSwipeFirstViewController: UIViewController {
             // Setting the modalPresentationStyle to FullScreen enables the
             // <ContextTransitioning> to provide more accurate initial and final
             // frames of the participating view controllers.
-            destinationViewController.modalPresentationStyle = .FullScreen
+            destinationViewController.modalPresentationStyle = .fullScreen
         }
     }
     
@@ -115,7 +115,7 @@ class AAPLSwipeFirstViewController: UIViewController {
     //| ----------------------------------------------------------------------------
     //! Action for unwinding from AAPLSwipeSecondViewController.
     //
-    @IBAction func unwindToSwipeFirstViewController(sender: UIStoryboardSegue) {
+    @IBAction func unwindToSwipeFirstViewController(_ sender: UIStoryboardSegue) {
     }
     
 }

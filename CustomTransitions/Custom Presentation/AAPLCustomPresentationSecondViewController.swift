@@ -45,7 +45,7 @@ class AAPLCustomPresentationSecondViewController: UIViewController {
     //        this presentation style overrides -shouldRemovePresentersView to
     //        return NO, avoiding the above problem.
     
-    @IBOutlet private weak var slider: UISlider!
+    @IBOutlet fileprivate weak var slider: UISlider!
     
     
     //| ----------------------------------------------------------------------------
@@ -68,8 +68,8 @@ class AAPLCustomPresentationSecondViewController: UIViewController {
     
     //| ----------------------------------------------------------------------------
     @available(iOS 8.0, *)
-    override func willTransitionToTraitCollection(newCollection: UITraitCollection, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.willTransitionToTraitCollection(newCollection, withTransitionCoordinator: coordinator)
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.willTransition(to: newCollection, with: coordinator)
         
         // When the current trait collection changes (e.g. the device rotates),
         // update the preferredContentSize.
@@ -82,8 +82,8 @@ class AAPLCustomPresentationSecondViewController: UIViewController {
     //! of the provided \a traitCollection.
     //
     @available(iOS 8.0, *)
-    func updatePreferredContentSizeWithTraitCollection(traitCollection: UITraitCollection) {
-        self.preferredContentSize = CGSizeMake(self.view.bounds.size.width, traitCollection.verticalSizeClass == .Compact ? 270 : 420)
+    func updatePreferredContentSizeWithTraitCollection(_ traitCollection: UITraitCollection) {
+        self.preferredContentSize = CGSize(width: self.view.bounds.size.width, height: traitCollection.verticalSizeClass == .compact ? 270 : 420)
         
         // To demonstrate how a presentation controller can dynamically respond
         // to changes to its presented view controller's preferredContentSize,
@@ -99,8 +99,8 @@ class AAPLCustomPresentationSecondViewController: UIViewController {
     
     
     //| ----------------------------------------------------------------------------
-    @IBAction func sliderValueChange(sender: UISlider) {
-        self.preferredContentSize = CGSizeMake(self.view.bounds.size.width, CGFloat(sender.value))
+    @IBAction func sliderValueChange(_ sender: UISlider) {
+        self.preferredContentSize = CGSize(width: self.view.bounds.size.width, height: CGFloat(sender.value))
     }
     
     //MARK: -
@@ -109,7 +109,7 @@ class AAPLCustomPresentationSecondViewController: UIViewController {
     //| ----------------------------------------------------------------------------
     //! Action for unwinding from the presented view controller (C).
     //
-    @IBAction func unwindToCustomPresentationSecondViewController(sender: UIStoryboardSegue) {
+    @IBAction func unwindToCustomPresentationSecondViewController(_ sender: UIStoryboardSegue) {
     }
     
 }

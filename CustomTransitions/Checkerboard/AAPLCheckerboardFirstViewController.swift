@@ -37,7 +37,7 @@ class AAPLCheckerboardFirstViewController: UIViewController, UINavigationControl
     //  or nil if the transition should use the navigation controller's default
     //  push/pop animation.
     //
-    func navigationController(navigationController: UINavigationController, animationControllerForOperation operation: UINavigationControllerOperation, fromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return AAPLCheckerboardTransitionAnimator()
     }
     

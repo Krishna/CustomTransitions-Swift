@@ -20,7 +20,7 @@ import UIKit
 class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     //| ----------------------------------------------------------------------------
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 3.0
     }
     
@@ -36,11 +36,11 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
     //  [transitionContext finalFrameForViewController:toViewController] when the
     //  transition is complete.
     //
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
         
-        let containerView = transitionContext.containerView()!
+        let containerView = transitionContext.containerView
         
         // For a Push:
         //      fromView = The current top view controller.
@@ -55,8 +55,8 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
         // animator manipulates.  This method should be preferred over accessing
         // the view of the fromViewController/toViewController directly.
         if #available(iOS 8.0, *) {
-            fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)!
-            toView = transitionContext.viewForKey(UITransitionContextToViewKey)!
+            fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)!
+            toView = transitionContext.view(forKey: UITransitionContextViewKey.to)!
         } else {
             fromView = fromViewController.view
             toView = toViewController.view!
@@ -65,12 +65,12 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
         // If a push is being animated, the incoming view controller will have a
         // higher index on the navigation stack than the current top view
         // controller.
-        let isPush = toViewController.navigationController?.viewControllers.indexOf(toViewController) ?? 0 > fromViewController.navigationController?.viewControllers.indexOf(fromViewController) ?? 0
+        let isPush = toViewController.navigationController?.viewControllers.index(of: toViewController) ?? 0 > fromViewController.navigationController?.viewControllers.index(of: fromViewController) ?? 0
         
         // Our animation will be operating on snapshots of the fromView and toView,
         // so the final frame of toView can be configured now.
-        fromView.frame = transitionContext.initialFrameForViewController(fromViewController)
-        toView.frame = transitionContext.finalFrameForViewController(toViewController)
+        fromView.frame = transitionContext.initialFrame(for: fromViewController)
+        toView.frame = transitionContext.finalFrame(for: toViewController)
         
         // We are responsible for adding the incoming view to the containerView
         // for the transition.
@@ -80,22 +80,22 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
         
         // Snapshot the fromView.
         UIGraphicsBeginImageContextWithOptions(containerView.bounds.size, true, containerView.window!.screen.scale)
-        fromView.drawViewHierarchyInRect(containerView.bounds, afterScreenUpdates: false)
+        fromView.drawHierarchy(in: containerView.bounds, afterScreenUpdates: false)
         let fromViewSnapshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
         // To avoid a blank snapshot, defer snapshotting the incoming view until it
         // has had a chance to perform layout and drawing (1 run-loop cycle).
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             UIGraphicsBeginImageContextWithOptions(containerView.bounds.size, true, containerView.window!.screen.scale)
-            toView.drawViewHierarchyInRect(containerView.bounds, afterScreenUpdates: false)
+            toView.drawHierarchy(in: containerView.bounds, afterScreenUpdates: false)
             toViewSnapshot = UIGraphicsGetImageFromCurrentImageContext()
             UIGraphicsEndImageContext()
         }
         
         let transitionContainer = UIView(frame: containerView.bounds)
-        transitionContainer.opaque = true
-        transitionContainer.backgroundColor = UIColor.blackColor()
+        transitionContainer.isOpaque = true
+        transitionContainer.backgroundColor = UIColor.black
         containerView.addSubview(transitionContainer)
         
         // Apply a perpective transform to the sublayers of transitionContainer.
@@ -104,64 +104,64 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
         transitionContainer.layer.sublayerTransform = t
         
         // The size and number of slices is a function of the width.
-        let sliceSize = round(CGRectGetWidth(transitionContainer.frame) / 10.0)
-        let horizontalSlices = Int(ceil(CGRectGetWidth(transitionContainer.frame) / sliceSize))
-        let verticalSlices = Int(ceil(CGRectGetHeight(transitionContainer.frame) / sliceSize))
+        let sliceSize = round(transitionContainer.frame.width / 10.0)
+        let horizontalSlices = Int(ceil(transitionContainer.frame.width / sliceSize))
+        let verticalSlices = Int(ceil(transitionContainer.frame.height / sliceSize))
         
         // transitionSpacing controls the transition duration for each slice.
         // Higher values produce longer animations with multiple slices having
         // their animations 'in flight' simultaneously.
         let transitionSpacing: CGFloat = 160.0
-        let transitionDuration = self.transitionDuration(transitionContext)
+        let transitionDuration = self.transitionDuration(using: transitionContext)
         
         let transitionVector: CGVector
         if isPush {
-            transitionVector = CGVectorMake(CGRectGetMaxX(transitionContainer.bounds) - CGRectGetMinX(transitionContainer.bounds),
-                CGRectGetMaxY(transitionContainer.bounds) - CGRectGetMinY(transitionContainer.bounds))
+            transitionVector = CGVector(dx: transitionContainer.bounds.maxX - transitionContainer.bounds.minX,
+                dy: transitionContainer.bounds.maxY - transitionContainer.bounds.minY)
         } else {
-            transitionVector = CGVectorMake(CGRectGetMinX(transitionContainer.bounds) - CGRectGetMaxX(transitionContainer.bounds),
-                CGRectGetMinY(transitionContainer.bounds) - CGRectGetMaxY(transitionContainer.bounds))
+            transitionVector = CGVector(dx: transitionContainer.bounds.minX - transitionContainer.bounds.maxX,
+                dy: transitionContainer.bounds.minY - transitionContainer.bounds.maxY)
         }
         
         let transitionVectorLength = sqrt(transitionVector.dx * transitionVector.dx + transitionVector.dy * transitionVector.dy)
-        let transitionUnitVector = CGVectorMake(transitionVector.dx / transitionVectorLength, transitionVector.dy / transitionVectorLength)
+        let transitionUnitVector = CGVector(dx: transitionVector.dx / transitionVectorLength, dy: transitionVector.dy / transitionVectorLength)
         
         for y in 0..<verticalSlices {
             for x in 0..<horizontalSlices {
                 let fromContentLayer = CALayer()
-                fromContentLayer.frame = CGRectMake(CGFloat(x) * sliceSize * -1.0, CGFloat(y) * sliceSize * -1.0, containerView.bounds.size.width, containerView.bounds.size.height)
-                fromContentLayer.rasterizationScale = fromViewSnapshot.scale
-                fromContentLayer.contents = fromViewSnapshot.CGImage
+                fromContentLayer.frame = CGRect(x: CGFloat(x) * sliceSize * -1.0, y: CGFloat(y) * sliceSize * -1.0, width: containerView.bounds.size.width, height: containerView.bounds.size.height)
+                fromContentLayer.rasterizationScale = (fromViewSnapshot?.scale)!
+                fromContentLayer.contents = fromViewSnapshot?.cgImage
                 
                 let toContentLayer = CALayer()
-                toContentLayer.frame = CGRectMake(CGFloat(x) * sliceSize * -1.0, CGFloat(y) * sliceSize * -1.0, containerView.bounds.size.width, containerView.bounds.size.height)
+                toContentLayer.frame = CGRect(x: CGFloat(x) * sliceSize * -1.0, y: CGFloat(y) * sliceSize * -1.0, width: containerView.bounds.size.width, height: containerView.bounds.size.height)
                 
                 // Snapshotting the toView was deferred so we must also defer applying
                 // the snapshot to the layer's contents.
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     // Disable actions so the contents are applied without animation.
                     let wereActiondDisabled = CATransaction.disableActions()
                     CATransaction.setDisableActions(true)
                     
                     toContentLayer.rasterizationScale = toViewSnapshot?.scale ?? 0
-                    toContentLayer.contents = toViewSnapshot?.CGImage
+                    toContentLayer.contents = toViewSnapshot?.cgImage
                     
                     CATransaction.setDisableActions(wereActiondDisabled)
                 }
                 
                 let toCheckboardSquareView = UIView()
-                toCheckboardSquareView.frame = CGRectMake(CGFloat(x) * sliceSize, CGFloat(y) * sliceSize, sliceSize, sliceSize)
-                toCheckboardSquareView.opaque = false
+                toCheckboardSquareView.frame = CGRect(x: CGFloat(x) * sliceSize, y: CGFloat(y) * sliceSize, width: sliceSize, height: sliceSize)
+                toCheckboardSquareView.isOpaque = false
                 toCheckboardSquareView.layer.masksToBounds = true
-                toCheckboardSquareView.layer.doubleSided = false
+                toCheckboardSquareView.layer.isDoubleSided = false
                 toCheckboardSquareView.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
                 toCheckboardSquareView.layer.addSublayer(toContentLayer)
                 
                 let fromCheckboardSquareView = UIView()
-                fromCheckboardSquareView.frame = CGRectMake(CGFloat(x) * sliceSize, CGFloat(y) * sliceSize, sliceSize, sliceSize)
-                fromCheckboardSquareView.opaque = false
+                fromCheckboardSquareView.frame = CGRect(x: CGFloat(x) * sliceSize, y: CGFloat(y) * sliceSize, width: sliceSize, height: sliceSize)
+                fromCheckboardSquareView.isOpaque = false
                 fromCheckboardSquareView.layer.masksToBounds = true
-                fromCheckboardSquareView.layer.doubleSided = false
+                fromCheckboardSquareView.layer.isDoubleSided = false
                 fromCheckboardSquareView.layer.transform = CATransform3DIdentity
                 fromCheckboardSquareView.layer.addSublayer(fromContentLayer)
                 
@@ -183,36 +183,36 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
                 if isPush {
                     // Define a vector from the origin of transitionContainer to the
                     // top left corner of the slice.
-                    sliceOriginVector = CGVectorMake(CGRectGetMinX(fromCheckboardSquareView.frame) - CGRectGetMinX(transitionContainer.bounds),
-                        CGRectGetMinY(fromCheckboardSquareView.frame) - CGRectGetMinY(transitionContainer.bounds))
+                    sliceOriginVector = CGVector(dx: fromCheckboardSquareView.frame.minX - transitionContainer.bounds.minX,
+                        dy: fromCheckboardSquareView.frame.minY - transitionContainer.bounds.minY)
                 } else {
                     // Define a vector from the bottom right corner of
                     // transitionContainer to the bottom right corner of the slice.
-                    sliceOriginVector = CGVectorMake(CGRectGetMaxX(fromCheckboardSquareView.frame) - CGRectGetMaxX(transitionContainer.bounds),
-                        CGRectGetMaxY(fromCheckboardSquareView.frame) - CGRectGetMaxY(transitionContainer.bounds))
+                    sliceOriginVector = CGVector(dx: fromCheckboardSquareView.frame.maxX - transitionContainer.bounds.maxX,
+                        dy: fromCheckboardSquareView.frame.maxY - transitionContainer.bounds.maxY)
                 }
                 
                 // Project sliceOriginVector onto transitionVector.
                 let dot = sliceOriginVector.dx * transitionVector.dx + sliceOriginVector.dy * transitionVector.dy
-                let projection = CGVectorMake(transitionUnitVector.dx * dot/transitionVectorLength,
-                    transitionUnitVector.dy * dot/transitionVectorLength)
+                let projection = CGVector(dx: transitionUnitVector.dx * dot/transitionVectorLength,
+                    dy: transitionUnitVector.dy * dot/transitionVectorLength)
                 
                 // Compute the length of the projection.
                 let projectionLength = sqrt(projection.dx * projection.dx + projection.dy * projection.dy)
                 
-                let startTime = NSTimeInterval(projectionLength/(transitionVectorLength + transitionSpacing)) * transitionDuration
-                let duration = NSTimeInterval((projectionLength + transitionSpacing)/(transitionVectorLength + transitionSpacing)) * transitionDuration - startTime
+                let startTime = TimeInterval(projectionLength/(transitionVectorLength + transitionSpacing)) * transitionDuration
+                let duration = TimeInterval((projectionLength + transitionSpacing)/(transitionVectorLength + transitionSpacing)) * transitionDuration - startTime
                 
                 sliceAnimationsPending += 1
                 
-                UIView.animateWithDuration(duration, delay: startTime, options: [], animations: {
+                UIView.animate(withDuration: duration, delay: startTime, options: [], animations: {
                     toCheckboardSquareView.layer.transform = CATransform3DIdentity
                     fromCheckboardSquareView.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
                     }, completion: {finished in
                         // Finish the transition once the final animation completes.
                         sliceAnimationsPending -= 1
                         if sliceAnimationsPending == 0 {
-                            let wasCancelled = transitionContext.transitionWasCancelled()
+                            let wasCancelled = transitionContext.transitionWasCancelled
                             
                             transitionContainer.removeFromSuperview()
                             

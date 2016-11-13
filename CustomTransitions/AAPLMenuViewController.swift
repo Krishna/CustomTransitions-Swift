@@ -19,7 +19,7 @@ import UIKit
 class AAPLMenuViewController: UITableViewController {
     
     //| ----------------------------------------------------------------------------
-    override func shouldPerformSegueWithIdentifier(identifier: String, sender: AnyObject?) -> Bool {
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
         // Certain examples are only supported on iOS 8 and later.
         if #available(iOS 8.0, *) {
             return true
@@ -27,7 +27,7 @@ class AAPLMenuViewController: UITableViewController {
             let iOS7Examples = ["CrossDissolve", "Dynamics", "Swipe", "Checkerboard", "Slide"]
             
             if !iOS7Examples.contains(identifier) {
-                self.tableView.deselectRowAtIndexPath(self.tableView.indexPathForSelectedRow!, animated: true)
+                self.tableView.deselectRow(at: self.tableView.indexPathForSelectedRow!, animated: true)
                 
                 let alert = UIAlertView(title: "Can not load example.", message: "This example requires iOS 8 or later.", delegate: nil, cancelButtonTitle: "OK")
                 alert.show()

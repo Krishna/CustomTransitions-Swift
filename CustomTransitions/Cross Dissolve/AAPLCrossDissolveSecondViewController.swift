@@ -23,7 +23,7 @@ class AAPLCrossDissolveSecondViewController: UIViewController {
         // For the sake of example, this demo implements the presentation and
         // dismissal logic completely in code.  Take a look at the later demos
         // to learn how to integrate custom transitions with segues.
-        self.dismissViewControllerAnimated(true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
 }

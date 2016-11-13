@@ -29,7 +29,7 @@ class AAPLAdaptivePresentationSecondViewController: UIViewController, UIAdaptive
     // navigationItem.  This button will be picked up and displayed in the
     // navigation bar of the navigation controller returned by
     // -presentationController:viewControllerForAdaptivePresentationStyle:
-        let dismissButton = UIBarButtonItem(title: "Dismiss", style: .Plain, target: self, action: #selector(AAPLAdaptivePresentationSecondViewController.dismissButtonAction(_:)))
+        let dismissButton = UIBarButtonItem(title: "Dismiss", style: .plain, target: self, action: #selector(AAPLAdaptivePresentationSecondViewController.dismissButtonAction(_:)))
         self.navigationItem.leftBarButtonItem = dismissButton
     }
 
@@ -53,8 +53,8 @@ class AAPLAdaptivePresentationSecondViewController: UIViewController, UIAdaptive
 
 
 //| ----------------------------------------------------------------------------
-    @IBAction func dismissButtonAction(sender: UIBarButtonItem) {
-        self.performSegueWithIdentifier("unwindToFirstViewController", sender: sender)
+    @IBAction func dismissButtonAction(_ sender: UIBarButtonItem) {
+        self.performSegue(withIdentifier: "unwindToFirstViewController", sender: sender)
     }
 //
 //MARK: -
@@ -62,18 +62,18 @@ class AAPLAdaptivePresentationSecondViewController: UIViewController, UIAdaptive
 
 //| ----------------------------------------------------------------------------
     @available(iOS 8.0, *)
-    func adaptivePresentationStyleForPresentationController(controller: UIPresentationController) -> UIModalPresentationStyle {
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
     // An adaptive presentation may only fallback to
     // UIModalPresentationFullScreen or UIModalPresentationOverFullScreen
     // in the horizontally compact environment.  Other presentation styles
     // are interpreted as UIModalPresentationNone - no adaptation occurs.
-        return .FullScreen
+        return .fullScreen
     }
 
 
 //| ----------------------------------------------------------------------------
     @available(iOS 8.0, *)
-    func presentationController(controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
+    func presentationController(_ controller: UIPresentationController, viewControllerForAdaptivePresentationStyle style: UIModalPresentationStyle) -> UIViewController? {
         return UINavigationController(rootViewController: controller.presentedViewController)
     }
 

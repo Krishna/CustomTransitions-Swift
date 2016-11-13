@@ -34,7 +34,7 @@ class AAPLSwipeTransitionDelegate: NSObject, UIViewControllerTransitioningDelega
     //  UIViewControllerAnimatedTransitioning protocol, or nil if the default
     //  presentation animation should be used.
     //
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return AAPLSwipeTransitionAnimator(targetEdge: self.targetEdge)
     }
     
@@ -47,7 +47,7 @@ class AAPLSwipeTransitionDelegate: NSObject, UIViewControllerTransitioningDelega
     //  UIViewControllerAnimatedTransitioning protocol, or nil if the default
     //  dismissal animation should be used.
     //
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return AAPLSwipeTransitionAnimator(targetEdge: self.targetEdge)
     }
     
@@ -60,7 +60,7 @@ class AAPLSwipeTransitionDelegate: NSObject, UIViewControllerTransitioningDelega
     //  object that conforms to the UIViewControllerInteractiveTransitioning
     //  protocol, or nil if the transition should not be interactive.
     //
-    func interactionControllerForPresentation(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         // You must not return an interaction controller from this method unless
         // the transition will be interactive.
         if let gestureRecognizer = self.gestureRecognizer {
@@ -79,7 +79,7 @@ class AAPLSwipeTransitionDelegate: NSObject, UIViewControllerTransitioningDelega
     //  object that conforms to the UIViewControllerInteractiveTransitioning
     //  protocol, or nil if the transition should not be interactive.
     //
-    func interactionControllerForDismissal(animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+    func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         // You must not return an interaction controller from this method unless
         // the transition will be interactive.
         if let gestureRecognizer = self.gestureRecognizer {

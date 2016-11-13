@@ -24,7 +24,7 @@ class AAPLAdaptivePresentationFirstViewController: UIViewController {
     //| ----------------------------------------------------------------------------
     //! Action for unwinding from AAPLAdaptivePresentationSecondViewController.
     //
-    @IBAction func unwindToAdaptivePresentationFirstViewController(sender: UIStoryboardSegue) {
+    @IBAction func unwindToAdaptivePresentationFirstViewController(_ sender: UIStoryboardSegue) {
     }
     
 }

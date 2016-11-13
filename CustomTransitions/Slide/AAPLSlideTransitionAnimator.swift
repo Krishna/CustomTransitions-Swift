@@ -33,7 +33,7 @@ class AAPLSlideTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
     
     
     //| ----------------------------------------------------------------------------
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.35
     }
     
@@ -48,11 +48,11 @@ class AAPLSlideTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
     //  [transitionContext finalFrameForViewController:toViewController] when
     //  the transition is complete.
     //
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
         
-        let containerView = transitionContext.containerView()
+        let containerView = transitionContext.containerView
         let fromView: UIView
         let toView: UIView
         
@@ -60,44 +60,44 @@ class AAPLSlideTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
         // animator manipulates.  This method should be preferred over accessing
         // the view of the fromViewController/toViewController directly.
         if #available(iOS 8.0, *) {
-            fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)!
-            toView = transitionContext.viewForKey(UITransitionContextToViewKey)!
+            fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)!
+            toView = transitionContext.view(forKey: UITransitionContextViewKey.to)!
         } else {
             fromView = fromViewController.view
             toView = toViewController.view
         }
         
-        let fromFrame = transitionContext.initialFrameForViewController(fromViewController)
-        let toFrame = transitionContext.finalFrameForViewController(toViewController)
+        let fromFrame = transitionContext.initialFrame(for: fromViewController)
+        let toFrame = transitionContext.finalFrame(for: toViewController)
         
         // Based on the configured targetEdge, derive a normalized vector that will
         // be used to offset the frame of the view controllers.
         var offset: CGVector
-        if self.targetEdge == UIRectEdge.Left {
-            offset = CGVectorMake(-1.0, 0.0)
-        } else if self.targetEdge == .Right {
-            offset = CGVectorMake(1.0, 0.0)
+        if self.targetEdge == UIRectEdge.left {
+            offset = CGVector(dx: -1.0, dy: 0.0)
+        } else if self.targetEdge == .right {
+            offset = CGVector(dx: 1.0, dy: 0.0)
         } else {
             fatalError("targetEdge must be one of UIRectEdgeLeft, or UIRectEdgeRight.")
         }
         
         // The toView starts off-screen and slides in as the fromView slides out.
         fromView.frame = fromFrame
-        toView.frame = CGRectOffset(toFrame, toFrame.size.width * offset.dx * -1,
-            toFrame.size.height * offset.dy * -1)
+        toView.frame = toFrame.offsetBy(dx: toFrame.size.width * offset.dx * -1,
+            dy: toFrame.size.height * offset.dy * -1)
         
         // We are responsible for adding the incoming view to the containerView.
-        containerView?.addSubview(toView)
+        containerView.addSubview(toView)
         
-        let transitionDuration = self.transitionDuration(transitionContext)
+        let transitionDuration = self.transitionDuration(using: transitionContext)
         
-        UIView.animateWithDuration(transitionDuration, animations: {
-            fromView.frame = CGRectOffset(fromFrame, fromFrame.size.width * offset.dx,
-                fromFrame.size.height * offset.dy)
+        UIView.animate(withDuration: transitionDuration, animations: {
+            fromView.frame = fromFrame.offsetBy(dx: fromFrame.size.width * offset.dx,
+                dy: fromFrame.size.height * offset.dy)
             toView.frame = toFrame
             
             }, completion: {finshed in
-                let wasCancelled = transitionContext.transitionWasCancelled()
+                let wasCancelled = transitionContext.transitionWasCancelled
                 // When we complete, tell the transition context
                 // passing along the BOOL that indicates whether the transition
                 // finished or not.

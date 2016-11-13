@@ -26,7 +26,7 @@ class AAPLSwipeSecondViewController: UIViewController {
         // This gesture recognizer could be defined in the storyboard but is
         // instead created in code for clarity.
         let interactiveTransitionRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(AAPLSwipeSecondViewController.interactiveTransitionRecognizerAction(_:)))
-        interactiveTransitionRecognizer.edges = .Left
+        interactiveTransitionRecognizer.edges = .left
         self.view.addGestureRecognizer(interactiveTransitionRecognizer)
     }
     
@@ -34,18 +34,18 @@ class AAPLSwipeSecondViewController: UIViewController {
     //| ----------------------------------------------------------------------------
     //! Action method for the interactiveTransitionRecognizer.
     //
-    @IBAction func interactiveTransitionRecognizerAction(sender: UIScreenEdgePanGestureRecognizer) {
-        if sender.state == .Began {
+    @IBAction func interactiveTransitionRecognizerAction(_ sender: UIScreenEdgePanGestureRecognizer) {
+        if sender.state == .began {
             // "BackToFirstViewController" is the identifier of the unwind segue
             // back to AAPLSwipeFirstViewController.  Triggering it will dismiss
             // this view controller.
-            self.performSegueWithIdentifier("BackToFirstViewController", sender: sender)
+            self.performSegue(withIdentifier: "BackToFirstViewController", sender: sender)
         }
     }
     
     
     //| ----------------------------------------------------------------------------
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "BackToFirstViewController" {
             // Check if we were presented with our custom transition delegate.
             // If we were, update the configuration of the
@@ -71,7 +71,7 @@ class AAPLSwipeSecondViewController: UIViewController {
                 //       configured edges because prior to iOS 8.3
                 //       UIScreenEdgePanGestureRecognizer would always return
                 //       UIRectEdgeNone when querying its edges property.
-                transitionDelegate.targetEdge = .Left
+                transitionDelegate.targetEdge = .left
             }
         }
     }

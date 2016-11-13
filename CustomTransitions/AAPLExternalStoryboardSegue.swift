@@ -28,7 +28,7 @@ class AAPLExternalStoryboardSegue: UIStoryboardSegue {
 //| ----------------------------------------------------------------------------
     override init(identifier: String?, source: UIViewController, destination: UIViewController) {
     // Load the storyboard named by this segue's identifier.
-        let externalStoryboard = UIStoryboard(name: identifier!, bundle: NSBundle(forClass: AAPLExternalStoryboardSegue.self))
+        let externalStoryboard = UIStoryboard(name: identifier!, bundle: Bundle(for: AAPLExternalStoryboardSegue.self))
 
     // Instantiate the storyboard's initial view controller.
         let initialViewController = externalStoryboard.instantiateInitialViewController()!
@@ -39,7 +39,7 @@ class AAPLExternalStoryboardSegue: UIStoryboardSegue {
 
 //| ----------------------------------------------------------------------------
     override func perform() {
-        self.sourceViewController.presentViewController(self.destinationViewController, animated: true, completion: nil)
+        self.source.present(self.destination, animated: true, completion: nil)
     }
 
 }

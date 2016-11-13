@@ -29,16 +29,16 @@ class AAPLSwipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
     
     
     //| ----------------------------------------------------------------------------
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.35
     }
     
     //| ----------------------------------------------------------------------------
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
         
-        let containerView = transitionContext.containerView()!
+        let containerView = transitionContext.containerView
         
         // For a Presentation:
         //      fromView = The presenting view.
@@ -62,8 +62,8 @@ class AAPLSwipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
         // decoration instead and the presented view controller's view will be a
         // child of the decoration.
         if #available(iOS 8.0, *) {
-            fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)!
-            toView = transitionContext.viewForKey(UITransitionContextToViewKey)!
+            fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)!
+            toView = transitionContext.view(forKey: UITransitionContextViewKey.to)!
         } else {
             fromView = fromViewController.view
             toView = toViewController.view
@@ -74,20 +74,20 @@ class AAPLSwipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
         // fromViewController.  Otherwise, this is a dismissal.
         let isPresenting = (toViewController.presentingViewController === fromViewController)
         
-        let fromFrame = transitionContext.initialFrameForViewController(fromViewController)
-        let toFrame = transitionContext.finalFrameForViewController(toViewController)
+        let fromFrame = transitionContext.initialFrame(for: fromViewController)
+        let toFrame = transitionContext.finalFrame(for: toViewController)
         
         // Based on our configured targetEdge, derive a normalized vector that will
         // be used to offset the frame of the presented view controller.
         let offset: CGVector
-        if self.targetEdge == .Top {
-            offset = CGVectorMake(0.0, 1.0)
-        } else if self.targetEdge == .Bottom {
-            offset = CGVectorMake(0.0, -1.0)
-        } else if self.targetEdge == .Left {
-            offset = CGVectorMake(1.0, 0.0)
-        } else if self.targetEdge == .Right {
-            offset = CGVectorMake(-1.0, 0.0)
+        if self.targetEdge == .top {
+            offset = CGVector(dx: 0.0, dy: 1.0)
+        } else if self.targetEdge == .bottom {
+            offset = CGVector(dx: 0.0, dy: -1.0)
+        } else if self.targetEdge == .left {
+            offset = CGVector(dx: 1.0, dy: 0.0)
+        } else if self.targetEdge == .right {
+            offset = CGVector(dx: -1.0, dy: 0.0)
         } else {
             fatalError("targetEdge must be one of UIRectEdgeTop, UIRectEdgeBottom, UIRectEdgeLeft, or UIRectEdgeRight.")
         }
@@ -95,8 +95,8 @@ class AAPLSwipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
         if isPresenting {
             // For a presentation, the toView starts off-screen and slides in.
             fromView.frame = fromFrame
-            toView.frame = CGRectOffset(toFrame, toFrame.size.width * offset.dx * -1,
-                toFrame.size.height * offset.dy * -1)
+            toView.frame = toFrame.offsetBy(dx: toFrame.size.width * offset.dx * -1,
+                dy: toFrame.size.height * offset.dy * -1)
         } else {
             fromView.frame = fromFrame
             toView.frame = toFrame
@@ -113,19 +113,19 @@ class AAPLSwipeTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioni
             containerView.insertSubview(toView, belowSubview: fromView)
         }
         
-        let transitionDuration = self.transitionDuration(transitionContext)
+        let transitionDuration = self.transitionDuration(using: transitionContext)
         
-        UIView.animateWithDuration(transitionDuration, animations: {
+        UIView.animate(withDuration: transitionDuration, animations: {
             if isPresenting {
                 toView.frame = toFrame
             } else {
                 // For a dismissal, the fromView slides off the screen.
-                fromView.frame = CGRectOffset(fromFrame, fromFrame.size.width * offset.dx,
-                    fromFrame.size.height * offset.dy)
+                fromView.frame = fromFrame.offsetBy(dx: fromFrame.size.width * offset.dx,
+                    dy: fromFrame.size.height * offset.dy)
             }
             
             }, completion: {finished in
-                let wasCancelled = transitionContext.transitionWasCancelled()
+                let wasCancelled = transitionContext.transitionWasCancelled
                 
                 // Due to a bug with unwind segues targeting a view controller inside
                 // of a navigation controller, we must remove the toView in cases where

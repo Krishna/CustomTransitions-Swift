@@ -17,24 +17,24 @@ import UIKit
 @objc(AAPLAdaptivePresentationController)
 class AAPLAdaptivePresentationController: UIPresentationController, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning {
     
-    private var presentationWrappingView: UIView?
-    private var dismissButton: UIButton?
+    fileprivate var presentationWrappingView: UIView?
+    fileprivate var dismissButton: UIButton?
     
     
     //| ----------------------------------------------------------------------------
-    override init(presentedViewController: UIViewController, presentingViewController: UIViewController) {
-        super.init(presentedViewController: presentedViewController, presentingViewController: presentingViewController)
+    override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
+        super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
         
         // The presented view controller must have a modalPresentationStyle
         // of UIModalPresentationCustom for a custom presentation controller
         // to be used.
-        presentedViewController.modalPresentationStyle = .Custom
+        presentedViewController.modalPresentationStyle = .custom
         
     }
     
     
     //| ----------------------------------------------------------------------------
-    override func presentedView() -> UIView? {
+    override var presentedView : UIView? {
         // Return the wrapping view created in -presentationTransitionWillBegin.
         return self.presentationWrappingView
     }
@@ -49,7 +49,7 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     override func presentationTransitionWillBegin() {
         // The default implementation of -presentedView returns
         // self.presentedViewController.view.
-        let presentedViewControllerView = super.presentedView()!
+        let presentedViewControllerView = super.presentedView!
         
         // Wrap the presented view controller's view in an intermediate hierarchy
         // that applies a shadow and adds a dismiss button to the top left corner.
@@ -58,22 +58,22 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
         //     |- presentedViewControllerView (presentedViewController.view)
         //     |- close button
         do {
-            let presentationWrapperView = UIView(frame: CGRectZero)
+            let presentationWrapperView = UIView(frame: CGRect.zero)
             presentationWrapperView.layer.shadowOpacity = 0.63
             presentationWrapperView.layer.shadowRadius = 17.0
             self.presentationWrappingView = presentationWrapperView
             
             // Add presentedViewControllerView -> presentationWrapperView.
-            presentedViewControllerView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+            presentedViewControllerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
             //presentedViewControllerView.layer.borderColor = UIColor.grayColor().CGColor
             //presentedViewControllerView.layer.borderWidth = 2.0
             presentationWrapperView.addSubview(presentedViewControllerView)
             
             // Create the dismiss button.
-            let dismissButton = UIButton(type: .Custom)
-            dismissButton.frame = CGRectMake(0, 0, 26.0, 26.0)
-            dismissButton.setImage(UIImage(named: "CloseButton"), forState: .Normal)
-            dismissButton.addTarget(self, action: #selector(AAPLAdaptivePresentationController.dismissButtonTapped(_:)), forControlEvents: .TouchUpInside)
+            let dismissButton = UIButton(type: .custom)
+            dismissButton.frame = CGRect(x: 0, y: 0, width: 26.0, height: 26.0)
+            dismissButton.setImage(UIImage(named: "CloseButton"), for: UIControlState())
+            dismissButton.addTarget(self, action: #selector(AAPLAdaptivePresentationController.dismissButtonTapped(_:)), for: .touchUpInside)
             self.dismissButton = dismissButton
             
             // Add dismissButton -> presentationWrapperView.
@@ -87,8 +87,8 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     //| ----------------------------------------------------------------------------
     //  IBAction for the dismiss button.  Dismisses the presented view controller.
     //
-    @IBAction func dismissButtonTapped(sender: UIButton) {
-        self.presentingViewController.dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func dismissButtonTapped(_ sender: UIButton) {
+        self.presentingViewController.dismiss(animated: true, completion: nil)
     }
     
     //MARK: -
@@ -99,14 +99,14 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     //  the shadow on presentationWrapperView is disabled for the duration
     //  of the rotation animation.
     //
-    override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         
         self.presentationWrappingView?.clipsToBounds = true
         self.presentationWrappingView?.layer.shadowOpacity = 0.0
         self.presentationWrappingView?.layer.shadowRadius = 0.0
         
-        coordinator.animateAlongsideTransition( {context in
+        coordinator.animate( alongsideTransition: {context in
             // Intentionally left blank.
             }, completion: {context in
                 self.presentationWrappingView?.clipsToBounds = false
@@ -128,28 +128,28 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     //  of the presented view controller's view to match this promised size.
     //  We do this in -containerViewWillLayoutSubviews.
     //
-    override func sizeForChildContentContainer(container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
+    override func size(forChildContentContainer container: UIContentContainer, withParentContainerSize parentSize: CGSize) -> CGSize {
         if container === self.presentedViewController {
-            return CGSizeMake(parentSize.width/2, parentSize.height/2)
+            return CGSize(width: parentSize.width/2, height: parentSize.height/2)
         } else {
-            return super.sizeForChildContentContainer(container, withParentContainerSize: parentSize)
+            return super.size(forChildContentContainer: container, withParentContainerSize: parentSize)
         }
     }
     
     
     //| ----------------------------------------------------------------------------
-    override func frameOfPresentedViewInContainerView() -> CGRect {
+    override var frameOfPresentedViewInContainerView : CGRect {
         let containerViewBounds = self.containerView?.bounds ?? CGRect()
-        let presentedViewContentSize = self.sizeForChildContentContainer(self.presentedViewController, withParentContainerSize: containerViewBounds.size)
+        let presentedViewContentSize = self.size(forChildContentContainer: self.presentedViewController, withParentContainerSize: containerViewBounds.size)
         
         // Center the presentationWrappingView view within the container.
-        let frame = CGRectMake(CGRectGetMidX(containerViewBounds) - presentedViewContentSize.width/2,
-            CGRectGetMidY(containerViewBounds) - presentedViewContentSize.height/2,
-            presentedViewContentSize.width, presentedViewContentSize.height)
+        let frame = CGRect(x: containerViewBounds.midX - presentedViewContentSize.width/2,
+            y: containerViewBounds.midY - presentedViewContentSize.height/2,
+            width: presentedViewContentSize.width, height: presentedViewContentSize.height)
         
         // Outset the centered frame of presentationWrappingView so that the
         // dismiss button is within the bounds of presentationWrappingView.
-        return CGRectInset(frame, -20, -20)
+        return frame.insetBy(dx: -20, dy: -20)
     }
     
     
@@ -161,32 +161,32 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     override func containerViewWillLayoutSubviews() {
         super.containerViewWillLayoutSubviews()
         
-        self.presentationWrappingView?.frame = self.frameOfPresentedViewInContainerView()
+        self.presentationWrappingView?.frame = self.frameOfPresentedViewInContainerView
         
         // Undo the outset that was applied in -frameOfPresentedViewInContainerView.
-        self.presentedViewController.view.frame = CGRectInset(self.presentationWrappingView?.bounds ?? CGRect(), 20, 20)
+        self.presentedViewController.view.frame = (self.presentationWrappingView?.bounds ?? CGRect()).insetBy(dx: 20, dy: 20)
         
         // Position the dismissButton above the top-left corner of the presented
         // view controller's view.
-        self.dismissButton?.center = CGPointMake(CGRectGetMinX(self.presentedViewController.view.frame),
-            CGRectGetMinY(self.presentedViewController.view.frame))
+        self.dismissButton?.center = CGPoint(x: self.presentedViewController.view.frame.minX,
+            y: self.presentedViewController.view.frame.minY)
     }
     
     //MARK: -
     //MARK: UIViewControllerAnimatedTransitioning
     
     //| ----------------------------------------------------------------------------
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
-        return transitionContext?.isAnimated() ?? false ? 0.35 : 0
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return transitionContext?.isAnimated ?? false ? 0.35 : 0
     }
     
     
     //| ----------------------------------------------------------------------------
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
         
-        let containerView = transitionContext.containerView()!
+        let containerView = transitionContext.containerView
         
         // For a Presentation:
         //      fromView = The presenting view.
@@ -194,8 +194,8 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
         // For a Dismissal:
         //      fromView = The presented view.
         //      toView   = The presenting view.
-        let toView = transitionContext.viewForKey(UITransitionContextToViewKey)!
-        let fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)!
+        let toView = transitionContext.view(forKey: UITransitionContextViewKey.to)!
+        let fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)!
         
         let isPresenting = (fromViewController === self.presentingViewController)
         
@@ -208,19 +208,19 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
             
             // This animation only affects the alpha.  The views can be set to
             // their final frames now.
-            fromView.frame = transitionContext.finalFrameForViewController(fromViewController)
-            toView.frame = transitionContext.finalFrameForViewController(toViewController)
+            fromView.frame = transitionContext.finalFrame(for: fromViewController)
+            toView.frame = transitionContext.finalFrame(for: toViewController)
         } else {
             // Because our presentation wraps the presented view controller's view
             // in an intermediate view hierarchy, it is more accurate to rely
             // on the current frame of fromView than fromViewInitialFrame as the
             // initial frame.
-            toView.frame = transitionContext.finalFrameForViewController(toViewController)
+            toView.frame = transitionContext.finalFrame(for: toViewController)
         }
         
-        let transitionDuration = self.transitionDuration(transitionContext)
+        let transitionDuration = self.transitionDuration(using: transitionContext)
         
-        UIView.animateWithDuration(transitionDuration, animations: {
+        UIView.animate(withDuration: transitionDuration, animations: {
             if isPresenting {
                 toView.alpha = 1.0
             } else {
@@ -231,7 +231,7 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
                 // When we complete, tell the transition context
                 // passing along the BOOL that indicates whether the transition
                 // finished or not.
-                let wasCancelled = transitionContext.transitionWasCancelled()
+                let wasCancelled = transitionContext.transitionWasCancelled
                 transitionContext.completeTransition(!wasCancelled)
                 
                 // Reset the alpha of the dismissed view, in case it will be used
@@ -252,7 +252,7 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     //  controller that will manage the presentation.  If your implementation
     //  returns nil, an instance of UIPresentationController is used.
     //
-    func presentationControllerForPresentedViewController(presented: UIViewController, presentingViewController presenting: UIViewController, sourceViewController source: UIViewController) -> UIPresentationController? {
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         assert(self.presentedViewController == presented, "You didn't initialize \(self) with the correct presentedViewController.  Expected \(presented), got \(self.presentedViewController).")
         
         return self
@@ -267,7 +267,7 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     //  UIViewControllerAnimatedTransitioning protocol, or nil if the default
     //  presentation animation should be used.
     //
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return self
     }
     
@@ -280,7 +280,7 @@ class AAPLAdaptivePresentationController: UIPresentationController, UIViewContro
     //  UIViewControllerAnimatedTransitioning protocol, or nil if the default
     //  dismissal animation should be used.
     //
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return self
     }
     

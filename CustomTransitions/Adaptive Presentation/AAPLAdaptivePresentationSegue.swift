@@ -19,8 +19,8 @@ class AAPLAdaptivePresentationSegue: UIStoryboardSegue {
     
     //| ----------------------------------------------------------------------------
     override func perform() {
-        let sourceViewController = self.destinationViewController
-        let destinationViewController = self.destinationViewController
+        let sourceViewController = self.destination
+        let destinationViewController = self.destination
         
         // For presentations which will use a custom presentation controller,
         // it is possible for that presentation controller to also be the
@@ -31,11 +31,11 @@ class AAPLAdaptivePresentationSegue: UIStoryboardSegue {
         // released prior to calling -presentViewController:animated:completion:
         // the NS_VALID_UNTIL_END_OF_SCOPE attribute is appended to the declaration.
         
-        let presentationController = AAPLAdaptivePresentationController(presentedViewController: destinationViewController, presentingViewController: sourceViewController)
+        let presentationController = AAPLAdaptivePresentationController(presentedViewController: destinationViewController, presenting: sourceViewController)
         
         destinationViewController.transitioningDelegate = presentationController
         
-        self.sourceViewController.presentViewController(destinationViewController, animated: true, completion: {
+        self.source.present(destinationViewController, animated: true, completion: {
             let _ = presentationController
         })
     }

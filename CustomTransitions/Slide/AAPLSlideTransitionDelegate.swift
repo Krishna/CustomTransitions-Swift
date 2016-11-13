@@ -17,12 +17,36 @@
  */
 
 import UIKit
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l < r
+  case (nil, _?):
+    return true
+  default:
+    return false
+  }
+}
+
+// FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
+// Consider refactoring the code to use the non-optional operators.
+fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+  switch (lhs, rhs) {
+  case let (l?, r?):
+    return l > r
+  default:
+    return rhs < lhs
+  }
+}
+
 
 @objc(AAPLSlideTransitionDelegate)
 class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     
     //! The UITabBarController instance for which this object is the delegate of.
-    private weak var _tabBarController: UITabBarController!
+    fileprivate weak var _tabBarController: UITabBarController!
     
     //! The gesture recognizer used for driving the interactive transition
     //! between view controllers.  AAPLSlideTransitionDelegate installs this
@@ -30,7 +54,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     
     //! They key used to associate an instance of AAPLSlideTransitionDelegate with
     //! the tab bar controller for which it is the delegate.
-    private let AAPLSlideTabBarControllerDelegateAssociationKey = "AAPLSlideTabBarControllerDelegateAssociation"
+    fileprivate let AAPLSlideTabBarControllerDelegateAssociationKey = "AAPLSlideTabBarControllerDelegateAssociation"
     
     
     @IBOutlet var tabBarController: UITabBarController! {
@@ -70,7 +94,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //  Custom implementation of the getter for the panGestureRecognizer property.
     //  Lazily creates the pan gesture recognizer for the tab bar controller.
     //
-    private var _panGestureRecognizer: UIPanGestureRecognizer?
+    fileprivate var _panGestureRecognizer: UIPanGestureRecognizer?
     var panGestureRecognizer: UIPanGestureRecognizer {
         get {
             if _panGestureRecognizer == nil {
@@ -86,14 +110,14 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //| ----------------------------------------------------------------------------
     //! Action method for the panGestureRecognizer.
     //
-    @IBAction func panGestureRecognizerDidPan(sender: UIPanGestureRecognizer) {
+    @IBAction func panGestureRecognizerDidPan(_ sender: UIPanGestureRecognizer) {
         // Do not attempt to begin an interactive transition if one is already
         // ongoing
-        if self.tabBarController.transitionCoordinator() != nil {
+        if self.tabBarController.transitionCoordinator != nil {
             return
         }
         
-        if sender.state == .Began || sender.state == .Changed {
+        if sender.state == .began || sender.state == .changed {
             self.beginInteractiveTransitionIfPossible(sender)
         }
         
@@ -106,8 +130,8 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //! Begins an interactive transition with the provided gesture recognizer, if
     //! there is a view controller to transition to.
     //
-    private func beginInteractiveTransitionIfPossible(sender: UIPanGestureRecognizer) {
-        let translation = sender.translationInView(self.tabBarController.view)
+    fileprivate func beginInteractiveTransitionIfPossible(_ sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: self.tabBarController.view)
         
         if translation.x > 0.0 && self.tabBarController.selectedIndex > 0 {
             //        // Panning right, transition to the left view controller.
@@ -119,11 +143,11 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
             // Don't reset the gesture recognizer if we skipped starting the
             // transition because we don't have a translation yet (and thus, could
             // not determine the transition direction).
-            if !CGPointEqualToPoint(translation, CGPointZero) {
+            if !translation.equalTo(CGPoint.zero) {
                 // There is not a view controller to transition to, force the
                 // gesture recognizer to fail.
-                sender.enabled = false
-                sender.enabled = true
+                sender.isEnabled = false
+                sender.isEnabled = true
             }
         }
         
@@ -144,8 +168,8 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
         // ended or failed state, a new transition to the proper view controller
         // is started, and new animation + interaction controllers are created.
         //
-        self.tabBarController.transitionCoordinator()?.animateAlongsideTransition(nil) {context in
-            if context.isCancelled() && sender.state == .Changed {
+        self.tabBarController.transitionCoordinator?.animate(alongsideTransition: nil) {context in
+            if context.isCancelled && sender.state == .changed {
                 self.beginInteractiveTransitionIfPossible(sender)
             }
         }
@@ -161,19 +185,19 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //  object that conforms to the UIViewControllerAnimatedTransitioning protocol,
     //  or nil if the transition should not be animated.
     //
-    func tabBarController(tabBarController: UITabBarController, animationControllerForTransitionFromViewController fromVC: UIViewController, toViewController toVC: UIViewController) -> UIViewControllerAnimatedTransitioning?
+    func tabBarController(_ tabBarController: UITabBarController, animationControllerForTransitionFrom fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning?
     {
         assert(tabBarController == self.tabBarController, "\(tabBarController) is not the tab bar controller currently associated with \(self)")
         let viewControllers = tabBarController.viewControllers ?? []
         
-        if viewControllers.indexOf(toVC) > viewControllers.indexOf(fromVC) {
+        if viewControllers.index(of: toVC) > viewControllers.index(of: fromVC) {
             // The incoming view controller succeeds the outgoing view controller,
             // slide towards the left.
-            return AAPLSlideTransitionAnimator(targetEdge: .Left)
+            return AAPLSlideTransitionAnimator(targetEdge: .left)
         } else {
             // The incoming view controller precedes the outgoing view controller,
             // slide towards the right.
-            return AAPLSlideTransitionAnimator(targetEdge: .Right)
+            return AAPLSlideTransitionAnimator(targetEdge: .right)
         }
     }
     
@@ -187,11 +211,11 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //  UIViewControllerInteractiveTransitioning protocol, or nil if the transition
     //  should not be a interactive.
     //
-    func tabBarController(tabBarController: UITabBarController, interactionControllerForAnimationController animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning?
+    func tabBarController(_ tabBarController: UITabBarController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning?
     {
         assert(tabBarController == self.tabBarController, "\(tabBarController) is not the tab bar controller currently associated with \(self)")
         
-        if self.panGestureRecognizer.state == .Began || self.panGestureRecognizer.state == .Changed {
+        if self.panGestureRecognizer.state == .began || self.panGestureRecognizer.state == .changed {
             return AAPLSlideTransitionInteractionController(gestureRecognizer: self.panGestureRecognizer)
         } else {
             // You must not return an interaction controller from this method unless

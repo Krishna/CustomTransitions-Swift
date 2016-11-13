@@ -23,18 +23,18 @@ class AAPLAppDelegate: UIResponder, UIApplicationDelegate {
     
     
     //| ----------------------------------------------------------------------------
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         return true
     }
     
     
     //| ----------------------------------------------------------------------------
-    func application(application: UIApplication, supportedInterfaceOrientationsForWindow window: UIWindow?) -> UIInterfaceOrientationMask {
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         if #available(iOS 8.0, *) {
-            return .All
+            return .all
         } else {
-            return .Portrait
+            return .portrait
         }
     }
     

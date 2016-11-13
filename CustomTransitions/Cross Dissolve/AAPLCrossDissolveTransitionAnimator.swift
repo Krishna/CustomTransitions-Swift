@@ -20,17 +20,17 @@ import UIKit
 class AAPLCrossDissolveTransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
     
     //| ----------------------------------------------------------------------------
-    func transitionDuration(transitionContext: UIViewControllerContextTransitioning?) -> NSTimeInterval {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return 0.35
     }
     
     
     //| ----------------------------------------------------------------------------
-    func animateTransition(transitionContext: UIViewControllerContextTransitioning) {
-        let fromViewController = transitionContext.viewControllerForKey(UITransitionContextFromViewControllerKey)!
-        let toViewController = transitionContext.viewControllerForKey(UITransitionContextToViewControllerKey)!
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let fromViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.from)!
+        let toViewController = transitionContext.viewController(forKey: UITransitionContextViewControllerKey.to)!
         
-        let containerView = transitionContext.containerView()
+        let containerView = transitionContext.containerView
         
         // For a Presentation:
         //      fromView = The presenting view.
@@ -54,33 +54,33 @@ class AAPLCrossDissolveTransitionAnimator: NSObject, UIViewControllerAnimatedTra
         // decoration view instead and the presented view controller's view will
         // be a child of the decoration view.
         if #available(iOS 8.0, *) {
-            fromView = transitionContext.viewForKey(UITransitionContextFromViewKey)
-            toView = transitionContext.viewForKey(UITransitionContextToViewKey)
+            fromView = transitionContext.view(forKey: UITransitionContextViewKey.from)
+            toView = transitionContext.view(forKey: UITransitionContextViewKey.to)
         } else {
             fromView = fromViewController.view
             toView = toViewController.view
         }
         
-        fromView?.frame = transitionContext.initialFrameForViewController(fromViewController)
-        toView?.frame = transitionContext.finalFrameForViewController(toViewController)
+        fromView?.frame = transitionContext.initialFrame(for: fromViewController)
+        toView?.frame = transitionContext.finalFrame(for: toViewController)
         
         fromView?.alpha = 1.0
         toView?.alpha = 0.0
         
         // We are responsible for adding the incoming view to the containerView
         // for the presentation/dismissal.
-        if( toView != nil ) {containerView?.addSubview(toView!)}
+        if( toView != nil ) {containerView.addSubview(toView!)}
         
-        let transitionDuration = self.transitionDuration(transitionContext)
+        let transitionDuration = self.transitionDuration(using: transitionContext)
         
-        UIView.animateWithDuration(transitionDuration, animations: {
+        UIView.animate(withDuration: transitionDuration, animations: {
             fromView?.alpha = 0.0
             toView?.alpha = 1.0
             }, completion: {finished in
                 // When we complete, tell the transition context
                 // passing along the BOOL that indicates whether the transition
                 // finished or not.
-                let wasCancelled = transitionContext.transitionWasCancelled()
+                let wasCancelled = transitionContext.transitionWasCancelled
                 transitionContext.completeTransition(!wasCancelled)
         })
     }

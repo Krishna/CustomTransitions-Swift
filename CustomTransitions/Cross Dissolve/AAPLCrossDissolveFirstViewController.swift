@@ -24,18 +24,18 @@ class AAPLCrossDissolveFirstViewController: UIViewController, UIViewControllerTr
         // For the sake of example, this demo implements the presentation and
         // dismissal logic completely in code.  Take a look at the later demos
         // to learn how to integrate custom transitions with segues.
-        let secondViewController = self.storyboard!.instantiateViewControllerWithIdentifier("SecondViewController")
+        let secondViewController = self.storyboard!.instantiateViewController(withIdentifier: "SecondViewController")
         
         // Setting the modalPresentationStyle to FullScreen enables the
         // <ContextTransitioning> to provide more accurate initial and final frames
         // of the participating view controllers
-        secondViewController.modalPresentationStyle = .FullScreen
+        secondViewController.modalPresentationStyle = .fullScreen
         
         // The transitioning delegate can supply a custom animation controller
         // that will be used to animate the incoming view controller.
         secondViewController.transitioningDelegate = self
         
-        self.presentViewController(secondViewController, animated: true, completion: nil)
+        self.present(secondViewController, animated: true, completion: nil)
     }
     
     //MARK: -
@@ -49,7 +49,7 @@ class AAPLCrossDissolveFirstViewController: UIViewController, UIViewControllerTr
     //  UIViewControllerAnimatedTransitioning protocol, or nil if the default
     //  presentation animation should be used.
     //
-    func animationControllerForPresentedController(presented: UIViewController, presentingController presenting: UIViewController, sourceController source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return AAPLCrossDissolveTransitionAnimator()
     }
     
@@ -62,7 +62,7 @@ class AAPLCrossDissolveFirstViewController: UIViewController, UIViewControllerTr
     //  UIViewControllerAnimatedTransitioning protocol, or nil if the default
     //  dismissal animation should be used.
     //
-    func animationControllerForDismissedController(dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return AAPLCrossDissolveTransitionAnimator()
     }
     
