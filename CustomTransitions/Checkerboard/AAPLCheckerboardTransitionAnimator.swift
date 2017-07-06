@@ -154,7 +154,7 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
                 toCheckboardSquareView.isOpaque = false
                 toCheckboardSquareView.layer.masksToBounds = true
                 toCheckboardSquareView.layer.isDoubleSided = false
-                toCheckboardSquareView.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+                toCheckboardSquareView.layer.transform = CATransform3DMakeRotation(.pi, 0, 1, 0)
                 toCheckboardSquareView.layer.addSublayer(toContentLayer)
                 
                 let fromCheckboardSquareView = UIView()
@@ -207,7 +207,7 @@ class AAPLCheckerboardTransitionAnimator: NSObject, UIViewControllerAnimatedTran
                 
                 UIView.animate(withDuration: duration, delay: startTime, options: [], animations: {
                     toCheckboardSquareView.layer.transform = CATransform3DIdentity
-                    fromCheckboardSquareView.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+                    fromCheckboardSquareView.layer.transform = CATransform3DMakeRotation(.pi, 0, 1, 0)
                     }, completion: {finished in
                         // Finish the transition once the final animation completes.
                         sliceAnimationsPending -= 1

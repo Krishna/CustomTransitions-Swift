@@ -68,7 +68,7 @@ class AAPLSwipeTransitionInteractionController: UIPercentDrivenInteractiveTransi
     //! screen as a percentage of the transition container view's width or height.
     //! This is the percent completed for the interactive transition.
     //
-    fileprivate func percentForGesture(_ gesture: UIScreenEdgePanGestureRecognizer) -> CGFloat {
+    private func percentForGesture(_ gesture: UIScreenEdgePanGestureRecognizer) -> CGFloat {
         // Because view controllers will be sliding on and off screen as part
         // of the animation, we want to base our calculations in the coordinate
         // space of the view that will not be moving: the containerView of the

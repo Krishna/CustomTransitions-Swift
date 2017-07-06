@@ -17,8 +17,8 @@ import UIKit
 @objc(AAPLAdaptivePresentationController)
 class AAPLAdaptivePresentationController: UIPresentationController, UIViewControllerTransitioningDelegate, UIViewControllerAnimatedTransitioning {
     
-    fileprivate var presentationWrappingView: UIView?
-    fileprivate var dismissButton: UIButton?
+    private var presentationWrappingView: UIView?
+    private var dismissButton: UIButton?
     
     
     //| ----------------------------------------------------------------------------

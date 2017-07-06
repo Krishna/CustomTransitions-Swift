@@ -18,10 +18,10 @@ import UIKit
 @objc(AAPLSlideTransitionInteractionController)
 class AAPLSlideTransitionInteractionController: UIPercentDrivenInteractiveTransition {
     
-    fileprivate weak var transitionContext: UIViewControllerContextTransitioning?
-    fileprivate var gestureRecognizer: UIPanGestureRecognizer
-    fileprivate var initialLocationInContainerView: CGPoint = CGPoint()
-    fileprivate var initialTranslationInContainerView: CGPoint = CGPoint()
+    private weak var transitionContext: UIViewControllerContextTransitioning?
+    private var gestureRecognizer: UIPanGestureRecognizer
+    private var initialLocationInContainerView: CGPoint = CGPoint()
+    private var initialTranslationInContainerView: CGPoint = CGPoint()
     
     
     //| ----------------------------------------------------------------------------
@@ -65,7 +65,7 @@ class AAPLSlideTransitionInteractionController: UIPercentDrivenInteractiveTransi
     //! as a percentage of the transition container view's width.  This is
     //! the percent completed for the interactive transition.
     //
-    fileprivate func percentForGesture(_ gesture: UIPanGestureRecognizer) -> CGFloat {
+    private func percentForGesture(_ gesture: UIPanGestureRecognizer) -> CGFloat {
         let transitionContainerView = self.transitionContext?.containerView
         
         let translationInContainerView = gesture.translation(in: transitionContainerView)

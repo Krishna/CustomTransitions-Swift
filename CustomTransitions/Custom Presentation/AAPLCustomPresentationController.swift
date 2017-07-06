@@ -22,10 +22,10 @@ class AAPLCustomPresentationController: UIPresentationController, UIViewControll
     
     //! The corner radius applied to the view containing the presented view
     //! controller.
-    fileprivate let CORNER_RADIUS: CGFloat = 16.0
+    private let CORNER_RADIUS: CGFloat = 16.0
     
-    fileprivate var dimmingView: UIView?
-    fileprivate var presentationWrappingView: UIView?
+    private var dimmingView: UIView?
+    private var presentationWrappingView: UIView?
     
     
     //| ----------------------------------------------------------------------------

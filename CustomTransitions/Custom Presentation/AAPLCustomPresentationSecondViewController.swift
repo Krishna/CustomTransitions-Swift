@@ -45,7 +45,7 @@ class AAPLCustomPresentationSecondViewController: UIViewController {
     //        this presentation style overrides -shouldRemovePresentersView to
     //        return NO, avoiding the above problem.
     
-    @IBOutlet fileprivate weak var slider: UISlider!
+    @IBOutlet private weak var slider: UISlider!
     
     
     //| ----------------------------------------------------------------------------

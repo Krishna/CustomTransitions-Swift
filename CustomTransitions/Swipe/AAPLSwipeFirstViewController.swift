@@ -18,7 +18,7 @@ import UIKit
 @objc(AAPLSwipeFirstViewController)
 class AAPLSwipeFirstViewController: UIViewController {
     
-    fileprivate var _customTransitionDelegate: AAPLSwipeTransitionDelegate?
+    private var _customTransitionDelegate: AAPLSwipeTransitionDelegate?
     
     
     //| ----------------------------------------------------------------------------

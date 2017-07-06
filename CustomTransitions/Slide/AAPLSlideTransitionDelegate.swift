@@ -19,7 +19,7 @@
 import UIKit
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+private func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
     return l < r
@@ -32,7 +32,7 @@ fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 
 // FIXME: comparison operators with optionals were removed from the Swift Standard Libary.
 // Consider refactoring the code to use the non-optional operators.
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
+private func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
     return l > r
@@ -46,7 +46,7 @@ fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
 class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     
     //! The UITabBarController instance for which this object is the delegate of.
-    fileprivate weak var _tabBarController: UITabBarController!
+    private weak var _tabBarController: UITabBarController!
     
     //! The gesture recognizer used for driving the interactive transition
     //! between view controllers.  AAPLSlideTransitionDelegate installs this
@@ -54,7 +54,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     
     //! They key used to associate an instance of AAPLSlideTransitionDelegate with
     //! the tab bar controller for which it is the delegate.
-    fileprivate let AAPLSlideTabBarControllerDelegateAssociationKey = "AAPLSlideTabBarControllerDelegateAssociation"
+    private let AAPLSlideTabBarControllerDelegateAssociationKey = "AAPLSlideTabBarControllerDelegateAssociation"
     
     
     @IBOutlet var tabBarController: UITabBarController! {
@@ -94,7 +94,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //  Custom implementation of the getter for the panGestureRecognizer property.
     //  Lazily creates the pan gesture recognizer for the tab bar controller.
     //
-    fileprivate var _panGestureRecognizer: UIPanGestureRecognizer?
+    private var _panGestureRecognizer: UIPanGestureRecognizer?
     var panGestureRecognizer: UIPanGestureRecognizer {
         get {
             if _panGestureRecognizer == nil {
@@ -130,7 +130,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     //! Begins an interactive transition with the provided gesture recognizer, if
     //! there is a view controller to transition to.
     //
-    fileprivate func beginInteractiveTransitionIfPossible(_ sender: UIPanGestureRecognizer) {
+    private func beginInteractiveTransitionIfPossible(_ sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: self.tabBarController.view)
         
         if translation.x > 0.0 && self.tabBarController.selectedIndex > 0 {
