@@ -27,7 +27,7 @@ class AAPLSwipeFirstViewController: UIViewController {
         
         // This gesture recognizer could be defined in the storyboard but is
         // instead created in code for clarity.
-        let interactiveTransitionRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(AAPLSwipeFirstViewController.interactiveTransitionRecognizerAction(_:)))
+        let interactiveTransitionRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(self.interactiveTransitionRecognizerAction(_:)))
         interactiveTransitionRecognizer.edges = .right
         self.view.addGestureRecognizer(interactiveTransitionRecognizer)
     }

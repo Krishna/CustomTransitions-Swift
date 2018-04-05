@@ -20,7 +20,7 @@ class AAPLCrossDissolveFirstViewController: UIViewController, UIViewControllerTr
     
     
     //| ----------------------------------------------------------------------------
-    @IBAction func presentWithCustomTransitionAction(_: AnyObject) {
+    @IBAction func presentWithCustomTransitionAction(_: Any) {
         // For the sake of example, this demo implements the presentation and
         // dismissal logic completely in code.  Take a look at the later demos
         // to learn how to integrate custom transitions with segues.

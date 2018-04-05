@@ -113,7 +113,7 @@ class AAPLCustomPresentationController: UIPresentationController, UIViewControll
             dimmingView.backgroundColor = UIColor.black
             dimmingView.isOpaque = false
             dimmingView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            dimmingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(AAPLCustomPresentationController.dimmingViewTapped(_:))))
+            dimmingView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.dimmingViewTapped(_:))))
             self.dimmingView = dimmingView
             self.containerView?.addSubview(dimmingView)
             

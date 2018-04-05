@@ -37,7 +37,7 @@ class AAPLSwipeTransitionInteractionController: UIPercentDrivenInteractiveTransi
         
         // Add self as an observer of the gesture recognizer so that this
         // object receives updates as the user moves their finger.
-        gestureRecognizer.addTarget(self, action: #selector(AAPLSwipeTransitionInteractionController.gestureRecognizeDidUpdate(_:)))
+        gestureRecognizer.addTarget(self, action: #selector(self.gestureRecognizeDidUpdate(_:)))
     }
     
     
@@ -50,7 +50,7 @@ class AAPLSwipeTransitionInteractionController: UIPercentDrivenInteractiveTransi
     
     //| ----------------------------------------------------------------------------
     deinit {
-        self.gestureRecognizer.removeTarget(self, action: #selector(AAPLSwipeTransitionInteractionController.gestureRecognizeDidUpdate(_:)))
+        self.gestureRecognizer.removeTarget(self, action: #selector(self.gestureRecognizeDidUpdate(_:)))
     }
     
     

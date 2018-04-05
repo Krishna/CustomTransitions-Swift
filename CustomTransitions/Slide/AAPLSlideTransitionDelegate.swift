@@ -98,7 +98,7 @@ class AAPLSlideTransitionDelegate: NSObject, UITabBarControllerDelegate {
     var panGestureRecognizer: UIPanGestureRecognizer {
         get {
             if _panGestureRecognizer == nil {
-                _panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(AAPLSlideTransitionDelegate.panGestureRecognizerDidPan(_:)))
+                _panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(self.panGestureRecognizerDidPan(_:)))
             }
             
             return _panGestureRecognizer!

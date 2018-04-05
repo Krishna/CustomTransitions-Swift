@@ -19,7 +19,7 @@ import UIKit
 class AAPLCrossDissolveSecondViewController: UIViewController {
     
     //| ----------------------------------------------------------------------------
-    @IBAction func dismissAction(_: AnyObject) {
+    @IBAction func dismissAction(_: Any) {
         // For the sake of example, this demo implements the presentation and
         // dismissal logic completely in code.  Take a look at the later demos
         // to learn how to integrate custom transitions with segues.

@@ -31,7 +31,7 @@ class AAPLSlideTransitionInteractionController: UIPercentDrivenInteractiveTransi
         
         // Add self as an observer of the gesture recognizer so that this
         // object receives updates as the user moves their finger.
-        gestureRecognizer.addTarget(self, action: #selector(AAPLSlideTransitionInteractionController.gestureRecognizeDidUpdate(_:)))
+        gestureRecognizer.addTarget(self, action: #selector(self.gestureRecognizeDidUpdate(_:)))
     }
     
     
@@ -44,7 +44,7 @@ class AAPLSlideTransitionInteractionController: UIPercentDrivenInteractiveTransi
     
     //| ----------------------------------------------------------------------------
     deinit {
-        self.gestureRecognizer.removeTarget(self, action: #selector(AAPLSlideTransitionInteractionController.gestureRecognizeDidUpdate(_:)))
+        self.gestureRecognizer.removeTarget(self, action: #selector(self.gestureRecognizeDidUpdate(_:)))
     }
     
     
@@ -105,7 +105,7 @@ class AAPLSlideTransitionInteractionController: UIPercentDrivenInteractiveTransi
                 self.cancel()
                 // Need to remove our action from the gesture recognizer to
                 // ensure it will not be called again before deallocation.
-                self.gestureRecognizer.removeTarget(self, action: #selector(AAPLSlideTransitionInteractionController.gestureRecognizeDidUpdate(_:)))
+                self.gestureRecognizer.removeTarget(self, action: #selector(self.gestureRecognizeDidUpdate(_:)))
             } else {
                 // We have been dragging! Update the transition context
                 // accordingly.
